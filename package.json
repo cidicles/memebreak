@@ -1,0 +1,19 @@
+{
+  "name": "memebreak",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Procedurally generated maze FPS - start at the heart of the labyrinth and fight your way out.",
+  "scripts": {
+    "dev": "node server/index.js --dev",
+    "build": "vite build",
+    "start": "node server/index.js"
+  },
+  "dependencies": {
+    "three": "^0.186.0",
+    "ws": "^8.21.3"
+  },
+  "devDependencies": {
+    "vite": "^8.3.0"
+  }
+}

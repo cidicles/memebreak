@@ -1,0 +1,13 @@
+{
+  "slug": "memebreak",
+  "name": "MemeBreak",
+  "tagline": "A procedural maze FPS where the memes have become sentient. Play solo, or 4-player co-op with proximity voice chat.",
+  "tags": ["fps", "3d", "co-op", "voice chat"],
+  "created": "2026-09-11",
+  "aliases": ["mazebreak"],
+  "type": "docker",
+  "build": "npm run build",
+  "files": ["Dockerfile", ".dockerignore", "package.json", "package-lock.json", "server", "dist"],
+  "memory": "160m",
+  "thumbnail": "aislop-thumb.jpg"
+}

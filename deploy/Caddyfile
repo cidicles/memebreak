@@ -1,0 +1,24 @@
+# Reverse proxy for the droplet (167.172.198.106), running in Docker with --network host.
+#   /memebreak/*  -> MemeBreak container   (127.0.0.1:5180)
+#   everything    -> Hard Launch container (127.0.0.1:8080)
+# HTTPS uses a free sslip.io hostname (it resolves to the IP) so browsers allow the microphone.
+
+167-172-198-106.sslip.io {
+	encode gzip
+	redir /memebreak /memebreak/ 308
+	redir /mazebreak* /memebreak/ 308
+	handle_path /memebreak/* {
+		reverse_proxy 127.0.0.1:5180
+	}
+	handle {
+		reverse_proxy 127.0.0.1:8080
+	}
+}
+
+# Plain HTTP on the bare IP (or any other host): Hard Launch as before, and MemeBreak
+# links bounce to the HTTPS hostname so voice chat works.
+:80 {
+	redir /memebreak* https://167-172-198-106.sslip.io{uri} 308
+	redir /mazebreak* https://167-172-198-106.sslip.io/memebreak/ 308
+	reverse_proxy 127.0.0.1:8080
+}

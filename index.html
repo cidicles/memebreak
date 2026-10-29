@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MEMEBREAK</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>😂</text></svg>" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body data-mode="solo">
+    <div id="app"></div>
+
+    <div id="hud" class="hidden">
+      <div id="vignette"></div>
+      <div id="downed" hidden>
+        <div class="big">YOU'RE DOWN</div>
+        <div>Hang on. A teammate can revive you. (Or pay respects.)</div>
+      </div>
+      <div id="dmg-dir"></div>
+      <div id="crosshair"><i></i><i></i><i></i><i></i></div>
+      <div id="hitmarker"></div>
+
+      <div id="stats" class="panel">
+        <div id="hud-level">LEVEL 1</div>
+        <div id="hud-kills">MEMES DELETED 0 / 0</div>
+        <div id="hud-time">00:00</div>
+      </div>
+      <div id="team"></div>
+
+      <canvas id="minimap" class="panel" width="200" height="200"></canvas>
+
+      <div id="health" class="panel">
+        <div class="label">HEALTH</div>
+        <div class="bar"><div id="health-fill"></div></div>
+        <div id="health-num">100</div>
+      </div>
+
+      <div id="ammo" class="panel">
+        <div id="weapon-slots"></div>
+        <div id="weapon-name">PISTOL</div>
+        <div class="count"><span id="ammo-mag">12</span><span id="ammo-reserve">/ &infin;</span></div>
+      </div>
+
+      <div id="revive" hidden>
+        <div id="revive-text"></div>
+        <div class="bar"><div id="revive-fill"></div></div>
+      </div>
+      <div id="voice-ind"></div>
+      <div id="announce"></div>
+      <div id="reload-hint"></div>
+      <div id="toasts"></div>
+    </div>
+
+    <div id="menu" class="screen">
+      <div class="card">
+        <h1>MEME<span>BREAK</span></h1>
+        <p class="tag">You wake at the heart of a living labyrinth. The memes have become sentient.<br />Fight your way to the edge.</p>
+        <div id="bestiary"></div>
+        <div class="controls">
+          <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move</div>
+          <div><kbd>Mouse</kbd> aim / shoot</div>
+          <div><kbd>Shift</kbd> sprint</div>
+          <div><kbd>R</kbd> reload</div>
+          <div><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> / <kbd>Wheel</kbd> weapons</div>
+          <div><kbd>F</kbd> pay respects</div>
+          <div><kbd>Esc</kbd> pause</div>
+        </div>
+        <div class="row">
+          <label>SEED <input id="seed-input" spellcheck="false" maxlength="24" /></label>
+          <button id="btn-random" class="ghost" title="Random seed">&#x21bb;</button>
+        </div>
+        <div class="row">
+          <label>SENSITIVITY <input id="sens-input" type="range" min="0.5" max="3" step="0.1" value="1" /></label>
+        </div>
+        <div class="row">
+          <label class="check"><input type="checkbox" id="voice-input" checked /> ANNOUNCER VOICE</label>
+        </div>
+        <div class="row">
+          <label>GORE
+            <select id="gore-input">
+              <option value="high">HIGH</option>
+              <option value="medium">MEDIUM</option>
+              <option value="low">LOW</option>
+            </select>
+          </label>
+        </div>
+        <button id="btn-start">PLAY SOLO</button>
+        <button id="btn-coop" class="ghost">CO-OP &middot; UP TO 4 PLAYERS</button>
+      </div>
+    </div>
+
+    <div id="coop" class="screen hidden">
+      <div class="card">
+        <h2>CO-OP</h2>
+        <p class="tag">Escape together. Proximity voice chat: you'll hear teammates from where they stand, muffled through walls. Headphones recommended.</p>
+        <div class="row">
+          <label>NAME <input id="name-input" spellcheck="false" maxlength="16" /></label>
+        </div>
+        <button id="btn-create">CREATE ROOM</button>
+        <div class="or">or join a friend</div>
+        <div class="row join">
+          <input id="code-input" class="code" spellcheck="false" maxlength="4" placeholder="CODE" />
+          <button id="btn-join">JOIN</button>
+        </div>
+        <p id="coop-status" class="status"></p>
+        <button id="btn-coop-back" class="ghost">BACK</button>
+      </div>
+    </div>
+
+    <div id="lobby" class="screen hidden">
+      <div class="card">
+        <div class="eyebrow">ROOM CODE</div>
+        <div id="lobby-code" class="code-big" title="Click to copy an invite link">----</div>
+        <p id="invite-status" class="status">Click the code to copy an invite link</p>
+        <div id="lobby-players"></div>
+        <div class="row">
+          <label class="check"><input type="checkbox" id="ptt-input" /> PUSH-TO-TALK <kbd>V</kbd></label>
+        </div>
+        <p id="mic-status" class="status"></p>
+        <div class="row host-only">
+          <label>SEED <input id="lobby-seed" spellcheck="false" maxlength="24" /></label>
+        </div>
+        <button id="btn-lobby-start" class="host-only">START</button>
+        <p class="tag client-only">Waiting for the host to start&hellip;</p>
+        <button class="ghost btn-leave">LEAVE ROOM</button>
+      </div>
+    </div>
+
+    <div id="pause" class="screen hidden">
+      <div class="card">
+        <h2 id="pause-title">PAUSED</h2>
+        <p class="tag" id="pause-seed"></p>
+        <p class="tag warn mp-only">The game keeps running while you're in this menu.</p>
+        <button id="btn-resume">RESUME</button>
+        <button id="btn-quit" class="ghost solo-only">QUIT TO MENU</button>
+        <button class="ghost btn-leave mp-only">LEAVE GAME</button>
+      </div>
+    </div>
+
+    <div id="dead" class="screen hidden">
+      <div class="card">
+        <h2 class="bad" id="dead-title">YOU DIED</h2>
+        <p class="tag" id="dead-stats"></p>
+        <button id="btn-retry" class="host-only">RETRY THIS MAZE</button>
+        <button id="btn-new" class="ghost solo-only">NEW RUN</button>
+        <button id="btn-to-lobby" class="ghost mp-only host-only">BACK TO LOBBY</button>
+        <p class="tag client-only">Waiting for the host&hellip;</p>
+        <button class="ghost btn-leave mp-only">LEAVE GAME</button>
+      </div>
+    </div>
+
+    <div id="won" class="screen hidden">
+      <div class="card">
+        <h2 class="good">GG EZ</h2>
+        <p class="tag" id="won-stats"></p>
+        <button id="btn-next" class="host-only">NEXT MAZE</button>
+        <button id="btn-menu" class="ghost solo-only">MENU</button>
+        <p class="tag client-only">Waiting for the host&hellip;</p>
+        <button class="ghost btn-leave mp-only">LEAVE GAME</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
